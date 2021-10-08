@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(GameObject))]
-[RequireComponent(typeof(Transform))]
 
 public class SpawnerEnemies : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class SpawnerEnemies : MonoBehaviour
 
     private Transform[] _spawnPoints;
 
-    private int _currentPoint = -1;
+    private int _currentPointIndex = -1;
 
     private float _duration = 2.0f;
     private float _runningTime;
@@ -31,18 +30,18 @@ public class SpawnerEnemies : MonoBehaviour
 
     private void FixedUpdate()
     {
-        StartCoroutine(Spawn(Time.deltaTime));
+        StartCoroutine(Spawn());
     }
 
-    private IEnumerator Spawn(float timing)
+    private IEnumerator Spawn()
     {
-        _runningTime += timing;
+        _runningTime += Time.deltaTime;
 
         if (_runningTime >= _duration)
         {
             _runningTime = 0;
 
-            Transform currentSpawnPoint = _spawnPoints[GetPointIndex()];
+            Transform currentSpawnPoint = _spawnPoints[GetNextPointIndex()];
             GameObject enemy = Instantiate(_enemyTemplate, currentSpawnPoint.position, Quaternion.identity);
         }
         yield return null;
@@ -59,15 +58,15 @@ public class SpawnerEnemies : MonoBehaviour
         }
     }
 
-    private int GetPointIndex()
+    private int GetNextPointIndex()
     {
-        _currentPoint++;
+        _currentPointIndex++;
 
-        if (_currentPoint == _spawnPoints.Length)
+        if (_currentPointIndex == _spawnPoints.Length)
         {
             ShufflePoints();
-            _currentPoint = 0;
+            _currentPointIndex = 0;
         }
-        return _currentPoint;
+        return _currentPointIndex;
     }
 }
