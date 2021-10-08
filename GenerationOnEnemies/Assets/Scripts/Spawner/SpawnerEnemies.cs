@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(GameObject))]
-
 public class SpawnerEnemies : MonoBehaviour
 {
     [SerializeField] private GameObject _enemyTemplate;
