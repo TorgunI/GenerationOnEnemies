@@ -14,7 +14,7 @@ public class SpawnerEnemies : MonoBehaviour
     private float _duration = 2.0f;
     private float _runningTime;
 
-    private void Start()
+    private void Awake()
     {
         _spawnPoints = new Transform[_spawn.childCount];
 
@@ -26,23 +26,25 @@ public class SpawnerEnemies : MonoBehaviour
         ShufflePoints();
     }
 
-    private void FixedUpdate()
+    private void Start()
     {
         StartCoroutine(Spawn());
     }
 
     private IEnumerator Spawn()
     {
-        _runningTime += Time.deltaTime;
-
-        if (_runningTime >= _duration)
+        while(_currentPointIndex != _spawnPoints.Length)
         {
-            _runningTime = 0;
+            while (_runningTime <= _duration)
+            {
+                _runningTime += Time.deltaTime;
+                yield return null;
+            }
 
+            _runningTime = 0;
             Transform currentSpawnPoint = _spawnPoints[GetNextPointIndex()];
             GameObject enemy = Instantiate(_enemyTemplate, currentSpawnPoint.position, Quaternion.identity);
         }
-        yield return null;
     }
 
     private void ShufflePoints()
